@@ -1,0 +1,84 @@
+<!--index.wxml-->
+<view class="container">
+  <!-- 背景动画粒子 -->
+  <view class="particles-container">
+    <block wx:for="{{particles}}" wx:key="index">
+      <view class="particle" 
+            style="left: {{item.left}}; top: {{item.top}}; width: {{item.size}}rpx; height: {{item.size}}rpx; animation-duration: {{item.animationDuration}}; animation-delay: {{item.delay}};"></view>
+    </block>
+  </view>
+
+  <!-- 标题 -->
+  <view class="title-container" animation="{{animationData}}">
+    <text class="title tech-text">图片水印工具</text>
+    <view class="subtitle-container">
+      <text class="subtitle tech-text">为你的照片添加专属水印</text>
+    </view>
+  </view>
+
+  <!-- 主要内容区 -->
+  <view class="content-area tech-card">
+    <!-- 图片上传区 -->
+    <view class="image-upload-container">
+      <view class="image-preview" wx:if="{{tempImagePath}}" bindtap="chooseImage">
+        <image src="{{resultImagePath || tempImagePath}}" mode="aspectFit"></image>
+      </view>
+      <view class="upload-button-container" wx:else>
+        <button class="tech-button upload-button" bindtap="chooseImage">
+          <text class="upload-icon">+</text>
+          <text>选择图片</text>
+        </button>
+      </view>
+    </view>
+
+    <!-- 水印设置区 -->
+    <view class="watermark-settings">
+      <!-- 水印文字 -->
+      <view class="setting-item">
+        <text class="setting-label">水印文字</text>
+        <input class="tech-input" type="text" value="{{watermarkText}}" bindinput="onTextInput" placeholder="请输入水印文字"/>
+      </view>
+
+      <!-- 水印颜色 -->
+      <view class="setting-item">
+        <text class="setting-label">水印颜色</text>
+        <view class="color-picker-container">
+          <view class="color-preview" style="background-color: {{watermarkColor}};"></view>
+          <picker mode="selector" range="{{['#ffffff', '#000000', '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']}}" bindchange="onColorChange">
+            <view class="tech-button color-picker-button">选择颜色</view>
+          </picker>
+        </view>
+      </view>
+
+      <!-- 字体大小 -->
+      <view class="setting-item">
+        <text class="setting-label">字体大小: {{watermarkSize}}px</text>
+        <slider class="tech-slider" min="10" max="100" value="{{watermarkSize}}" bindchange="onSizeChange" activeColor="#4568dc" backgroundColor="rgba(255,255,255,0.2)" block-color="#b06ab3" block-size="24"/>
+      </view>
+
+      <!-- 透明度 -->
+      <view class="setting-item">
+        <text class="setting-label">透明度: {{watermarkOpacity * 100}}%</text>
+        <slider class="tech-slider" min="10" max="100" value="{{watermarkOpacity * 100}}" bindchange="onOpacityChange" activeColor="#4568dc" backgroundColor="rgba(255,255,255,0.2)" block-color="#b06ab3" block-size="24"/>
+      </view>
+
+      <!-- 水印位置 -->
+      <view class="setting-item">
+        <text class="setting-label">水印位置</text>
+        <picker mode="selector" range="{{positions}}" range-key="name" value="{{selectedPositionIndex}}" bindchange="onPositionChange">
+          <view class="tech-button position-picker-button">
+            {{positions[selectedPositionIndex].name}}
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 保存按钮 -->
+    <view class="button-container">
+      <button class="tech-button save-button" bindtap="saveToAlbum">保存到相册</button>
+    </view>
+  </view>
+
+  <!-- Canvas用于绘制水印 (隐藏) -->
+  <canvas canvas-id="watermarkCanvas" style="width: {{canvasWidth}}px; height: {{canvasHeight}}px; position: absolute; left: -9999px;" wx:if="{{showCanvas}}"></canvas>
+</view> 
